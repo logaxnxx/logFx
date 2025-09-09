@@ -14,8 +14,13 @@ public class Java1Review {
 	//divides two doubles and returns their quotient
 	public static double divide (double first, double second) {
 		
-		quotient = first / second;
-		return quotient;
+		return first / second;
+	}
+	
+	//integer devision
+	public static int divide (int first, int second) {
+		
+		return first / second;	
 	}
 	
 	//tests whether the number given is divisible by seven
@@ -62,20 +67,25 @@ public class Java1Review {
 	//calculates the average of an array of integers
 	public static double average(int[] numList) {
 		
+		count = 0;
+		sum = 0;
+		
 		for (int i = 0; i < numList.length; i++) {
 			
 			sum += numList[i]; 
 			count++;
 		}
 		
-		return sum / count;
+		return (sum/count);
 	}
 	
 	//converts a string to lower case returning a new array
-	public static void toLowerCase(String[] wordArr) {
+	public static String[] toLowerCase(String[] wordArr) {
 		for(int i = 0; i < wordArr.length; i++) {
-			wordArr[i].toLowerCase();
+			wordArr[i] = wordArr[i].toLowerCase();
 		}
+		
+		return wordArr;
 	}
 	//converts a string array into lower case but leaves the give array un-change 
 	//so it creates a new array
