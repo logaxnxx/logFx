@@ -85,11 +85,12 @@ public class Playlist {
 	public int addSongs(Playlist playlist) {
 		if(playlist == null) return 0; 
 		//adds each element to the desired playlist
-		int before = songs.size();
-		for(int i = 0; i < playlist.getNumSongs(); i++) {
-			songs.add(playlist.getSong(i));
+		Song[] copy = playlist.getSongs();
+		
+		for(Song s: copy) {
+			songs.add(s);
 		}
-		return songs.size() - before;
+		return copy.length;
 	}
 	
 	//removes songs
@@ -99,7 +100,7 @@ public class Playlist {
 	public Song removeSong(int index) {
 		//tests to make sure index is within bounds of the ArrayList
 		if(index < 0 || index >= songs.size()) return null; 
-		else if(songs.get(index) == null) return null;
+		//else if(songs.get(index) == null) return null;
 		return songs.remove(index);
 	}
 	
@@ -123,6 +124,5 @@ public class Playlist {
 		return result;
 	}
 }
-
 
 
