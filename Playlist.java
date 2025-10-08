@@ -1,80 +1,135 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-
+import java.util.Arrays;
 
 public class Playlist {
+
+	private Song[] songs;
+	private int numSongs;
+	private static final int MIN_CAPACITY = 3;
 	
-	private ArrayList<Song> songs;
-	
-	//default constructor
-	public Playlist() {
-		songs = new ArrayList<>();
+	//constructors 
+	public Playlist()
+	{
+		songs = new Song[MIN_CAPACITY];
+		numSongs = 0;
 	}
-	//constructor from filename 
-	public Playlist(String filename) throws IOException {
-		this();
-		addSongs(filename);
-	}
-	
-	//adds songs from a file
-	public void addSongs(String filename) throws IOException {
-		
-		BufferedReader reader = new BufferedReader(new FileReader(filename));
-		while(reader.ready())
-		{
-		String line = reader.readLine();
-		
-		Song s = new Song(line);
-		songs.add(s);
+	public Playlist(int capacity)
+	{
+		if (capacity < MIN_CAPACITY) {
+			songs = new Song[MIN_CAPACITY];
+			numSongs = 0;
+		}
+		else {
+			songs = new Song[capacity];
+			numSongs = 0;
 		}
 	}
+	
 	//getters
-	public int getNumSongs() {
-		return songs.size();
+	public int getCapacity() 
+	{
+		return songs.length;
 	}
-	public Song getSong(int index) {
-		if (index < 0 || index >= songs.size()) {
+	public int getNumSongs()
+	{
+		return numSongs;
+	}
+	public Song getSong(int index)
+	{
+		if(index > -1 && index < numSongs)
+		{
+			return songs[index];
+		}
+		else {
 			return null;
 		}
-		return songs.get(index);
 	}
-	public Song[] getSongs() {
-		return songs.toArray(new Song[0]);
+	public Song[] getSongs() 
+	{
+		return Arrays.copyOf(songs, numSongs); //can't be leaked has to be a copy with a different reference 
 	}
 	
-	//setters 
-	public boolean addSong(Song song) {
-		return addSong(getNumSongs(), song);
-	}
-	public boolean addSong(int index, Song song) {
-		if(song == null || index < 0 || index > songs.size()) {
+	
+	//adding new elements
+	public boolean addSong(Song addedSong)
+	{
+		if (numSongs < songs.length && addedSong != null)
+		{
+			songs[numSongs] = addedSong;
+			numSongs++;
+			return true;
+		}
+		else
+		{
 			return false;
 		}
-		songs.add(index, song);
-		return true;
 	}
-	public int addSongs(Playlist playlist) {
-		if(playlist == null) return 0; 
-		//adds each element to the desired playlist
-		int added = 0;
-		for(int i = 0; i < playlist.getNumSongs(); i++) {
-			songs.add(playlist.getSong(i));
-			added++;
+	public boolean addSong(int index, Song song)
+	{
+		if(index < 0 || song == null || index > numSongs || numSongs == songs.length)
+		{
+			return false;
 		}
-		return added;
+		else
+		{
+			for(int i = numSongs; i > index; i--)
+			{
+				songs[i] = songs[i-1];
+			}
+			
+			songs[index] = song;
+			numSongs++;
+			return true;
+			
+		}
+	}
+	public int addSongs(Playlist playlist)
+	{
+		if(playlist == null) return 0;
+		
+		int count = 0;
+		int size = playlist.getNumSongs();
+		
+		for (int i = 0; i < size && numSongs < songs.length; i++) {
+			songs[numSongs] = playlist.getSong(i);
+			numSongs++;
+			count++;
+		}
+		
+		return count;
 	}
 	
-	//removes songs
-	public Song removeSong() {
-		return removeSong(getNumSongs() - 1);
+	//removing elements
+	public Song removeSong()
+	{
+		if (songs == null || numSongs == 0) 
+		{
+			return null;
+		}
+		else
+		{
+			Song temp = songs[numSongs -1];
+			songs[numSongs - 1] = null;
+			numSongs--;
+			return temp;
+		}
 	}
-	public Song removeSong(int index) {
-		//tests to make sure index is within bounds of the ArrayList
-		if(index < 0 || index >= songs.size()) return null; 
-		else if(songs.get(index) == null) return null;
-		return songs.remove(index);
+	public Song removeSong(int index)
+	{
+		if(index < 0 || index >= numSongs || index >= songs.length)
+		{
+			return null;
+		}
+		else
+		{
+			Song temp = songs[index];
+			for(int i = index +1; i < numSongs; i++)
+			{
+				songs[i-1] = songs[i];
+			}
+			
+			numSongs--; //adjust size
+			songs[numSongs] = null; //removes the last element of array
+			return temp;
+		}
 	}
 }
